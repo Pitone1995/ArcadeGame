@@ -27,7 +27,7 @@ public:
     TicTacToe();
     ~TicTacToe();
 
-    int run();
+    void run();
 
 private:
 

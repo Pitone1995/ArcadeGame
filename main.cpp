@@ -1,7 +1,9 @@
 #include <iostream>
 #include <vector>
+
 #include "Menu.h"
 #include "TicTacToe.h"
+#include "Snake.h"
 
 using namespace std;
 
@@ -29,10 +31,13 @@ int main(int argc, char *argv[]) {
 			}
 				break;
 
-			case SNAKE:
+			case SNAKE: {
+				Snake snake;
+				snake.run();
 				// mainMenu.clear();
 				// cout << "Load game selected: press any key to return to main menu...";
 				// system("pause > nul");
+			}
 				break;
 
 			default: // QUIT

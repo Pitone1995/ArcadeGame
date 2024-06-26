@@ -28,7 +28,7 @@ TicTacToe::~TicTacToe() {
     Console::ShowConsoleCursor(false);
 }
 
-int TicTacToe::run() {
+void TicTacToe::run() {
 
 	while (wannaPlay()) {
 
@@ -73,8 +73,6 @@ int TicTacToe::run() {
 	
         endGame();
 	}
-
-	return 0;
 }
 
 void TicTacToe::getPlayerInfo() {

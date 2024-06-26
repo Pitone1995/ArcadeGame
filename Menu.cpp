@@ -74,6 +74,7 @@ void Menu::showOpt() {
 		cout << m_options.at(i) << endl;
 	}
 }
+
 void Menu::clear() {
 
 	Console::resetColor();

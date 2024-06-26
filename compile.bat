@@ -1,1 +1,1 @@
-g++ main.cpp Menu.cpp TicTacToe.cpp -o ArcadeGame.exe
+g++ main.cpp Menu.cpp TicTacToe.cpp Snake.cpp -o ArcadeGame.exe
