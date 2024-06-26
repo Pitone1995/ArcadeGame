@@ -8,15 +8,13 @@ class SnakeThread {
 public:
 
     SnakeThread();
-    
+
     // Courtesy of https://stackoverflow.com/questions/1151582/pthread-function-from-a-class
 
     /** Returns true if the thread was successfully started, false if there was an error starting the thread */
     bool StartInternalThread() {
         return (pthread_create(&_thread, NULL, InternalThreadEntryFunc, this) == 0);
     }
-
-    void drawField();
 
     // User intervention
     void setXDirection(int v);
@@ -25,6 +23,10 @@ public:
 private:
 
     void run();
+    void drawField();
+
+    static void *InternalThreadEntryFunc(void *This) {((SnakeThread *)This)->run(); return NULL;}
+    pthread_t _thread;
 
     int m_x = 1;
     int m_y = 1;
@@ -32,9 +34,6 @@ private:
     int m_yT = 1;
     int m_vx = 1;
     int m_vy = 0;
-
-    static void *InternalThreadEntryFunc(void *This) {((SnakeThread *)This)->run(); return NULL;}
-    pthread_t _thread;
 };
 
 #endif

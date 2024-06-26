@@ -6,7 +6,6 @@
 #define W_FIELD 50
 
 SnakeThread::SnakeThread() {
-
 }
 
 void SnakeThread::run() {
