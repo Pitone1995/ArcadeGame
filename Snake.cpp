@@ -8,12 +8,6 @@
 
 using namespace std;
 
-#define UP_ARROW 72
-#define DWN_ARROW 80
-#define LEFT_ARROW 75
-#define RIGHT_ARROW 77
-#define ENTER 13
-
 Snake::Snake() {
 }
 

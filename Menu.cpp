@@ -5,10 +5,6 @@
 
 using namespace std;
 
-#define UP_ARROW 72
-#define DWN_ARROW 80
-#define ENTER 13
-
 Menu::Menu(vector<string> &options) {
 	
 	m_options = options;
