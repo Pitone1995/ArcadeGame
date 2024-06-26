@@ -11,6 +11,17 @@ SnakeThread::SnakeThread() {
 
 void SnakeThread::run() {
 
+    /* TODO
+    - check edges: change direction or enter from the other side?
+    - spawn fruits in random position in the field
+    - if eat fruit get bigger of 1
+    - can use matrix of field dimension with 1 where fruits are
+    - 0 when fruit is eaten
+    - check if coordinates of head (m_x, m_y) match fruit -> eat
+    - check if snake eats itself -> lose
+    - when get bigger: draw head + previous position (2 positions, 2 positions)
+    */
+
     while (1) {
 
         m_x = m_x + m_vx * m_xT;

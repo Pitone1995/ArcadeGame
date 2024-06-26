@@ -19,9 +19,6 @@ Snake::Snake() {
 
 void Snake::run() {
 
-    Console::resetColor();
-	system("cls");
-
     SnakeThread st;
     st.StartInternalThread();
 

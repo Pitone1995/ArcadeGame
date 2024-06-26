@@ -9,6 +9,8 @@ public:
 
     SnakeThread();
     
+    // Courtesy of https://stackoverflow.com/questions/1151582/pthread-function-from-a-class
+
     /** Returns true if the thread was successfully started, false if there was an error starting the thread */
     bool StartInternalThread() {
         return (pthread_create(&_thread, NULL, InternalThreadEntryFunc, this) == 0);
