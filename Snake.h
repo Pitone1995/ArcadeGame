@@ -13,13 +13,7 @@ public:
 
 private:
 
-    void drawField();
-    void moveSnake();
-
     bool m_play = true;
-    int m_field[H_FIELD][W_FIELD];
-    int m_currRow = 10;
-    int m_currCol = 10;
 };
 
 #endif
