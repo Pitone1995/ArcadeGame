@@ -8,7 +8,6 @@ class Snake {
 
 public:
 
-    Snake();
     void run();
 
 private:

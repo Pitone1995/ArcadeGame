@@ -1,15 +1,10 @@
 #include "Snake.h"
 
 #include "SnakeThread.h"
-
-#include "ConsoleUtils.h"
-#include <iostream>
+#include "Utils.h"
 #include <conio.h>
 
 using namespace std;
-
-Snake::Snake() {
-}
 
 void Snake::run() {
 

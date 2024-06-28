@@ -1,22 +1,20 @@
 #include "Menu.h"
 
-#include "ConsoleUtils.h"
+#include "Utils.h"
 #include <conio.h>
 
 using namespace std;
 
-Menu::Menu(vector<string> &options) {
+Menu::Menu(vector<string> &options) :
+m_options{options} {
 	
-	m_options = options;
-
-	//Console::printAllColor();
-	Console::ShowConsoleCursor(false);
+	Utils::ShowConsoleCursor(false);
 }
 
 Menu::~Menu() {
 
 	clear();
-	Console::ShowConsoleCursor(true);
+	Utils::ShowConsoleCursor(true);
 }
 
 /* This function returns when ENTER is pressed */
@@ -63,9 +61,9 @@ void Menu::showOpt() {
 	for (int i = 0; i < m_options.size(); i++) {
 
 		if (i == m_selIndex)
-			Console::setColor(HIGHLIGHT_TXT);
+			Utils::setColor(HIGHLIGHT_TXT);
 		else
-			Console::setColor(DEFAULT_TXT);
+			Utils::setColor(DEFAULT_TXT);
 
 		cout << m_options.at(i) << endl;
 	}
@@ -73,6 +71,6 @@ void Menu::showOpt() {
 
 void Menu::clear() {
 
-	Console::resetColor();
+	Utils::resetColor();
 	system("cls");
 }

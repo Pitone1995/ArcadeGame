@@ -1,13 +1,9 @@
 #include "TicTacToe.h"
 
-#include "ConsoleUtils.h"
-#include <chrono>
-#include <random>
 #include <algorithm>
+#include "Utils.h"
 
 using namespace std;
-
-typedef mt19937 MyRNG;
 
 // Win conditions
 #define WINCON_H_1 0x1C0 // 0b111000000
@@ -20,12 +16,12 @@ typedef mt19937 MyRNG;
 #define WINCON_O_2 0x054 // 0b001010100
 
 TicTacToe::TicTacToe() {
-    Console::ShowConsoleCursor(true);
+    Utils::ShowConsoleCursor(true);
 }
 
 
 TicTacToe::~TicTacToe() {
-    Console::ShowConsoleCursor(false);
+    Utils::ShowConsoleCursor(false);
 }
 
 void TicTacToe::run() {
@@ -144,9 +140,9 @@ void TicTacToe::drawBoard(int maskWin) {
 		int highlight = (1 << (MAX_MOVES - i - 1)) & maskWin;
 		if (highlight) {
 			
-			Console::setColor(GREEN);
+			Utils::setColor(GREEN);
 			cout << m_moves[i].s;
-			Console::resetColor();
+			Utils::resetColor();
 		}
 		else
 			cout << m_moves[i].s;
@@ -165,7 +161,7 @@ void TicTacToe::drawBoard(int maskWin) {
 
 void TicTacToe::sortPlayer() {
 
-    Player p = static_cast<Player>(getRandomInt(USER, COMPUTER));
+    Player p = static_cast<Player>(Utils::genRandomInt(USER, COMPUTER));
     m_sort = static_cast<int>(p);
 }
 
@@ -186,22 +182,6 @@ void TicTacToe::endGame() {
 
 bool TicTacToe::wannaPlay() {
     return m_play;
-}
-
-int TicTacToe::getRandomInt(int min, int max) {
-
-    chrono::system_clock::time_point now = chrono::system_clock::now();
-    auto now_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(now);
-    auto value = now_ms.time_since_epoch();
-
-    int seed = static_cast<int>(value.count());
-
-    MyRNG rng;
-    rng.seed(seed);
-
-    uniform_int_distribution<int> dist(min, max);
-
-    return dist(rng);
 }
 
 bool TicTacToe::gameOver() {
@@ -250,7 +230,7 @@ int TicTacToe::getCoord(const string &coordType) {
     Move m;
 
     // COMPUTER picks a random move in movesAvailable
-    int index = getRandomInt(0, m_movesAvailable.size() - 1);
+    int index = Utils::genRandomInt(0, m_movesAvailable.size() - 1);
     int pos = m_movesAvailable.at(index);
 
     /*
