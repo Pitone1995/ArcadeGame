@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include <string>
+#include <random>
 
 #define H_FIELD 25
 #define W_FIELD 50
@@ -11,6 +12,12 @@ SnakeThread::SnakeThread() {
     
     std::pair<int, int> initialCoord(m_x, m_x);
     m_body.push_back(initialCoord);
+
+    for (int i = 1; i < H_FIELD - 1; i++) {
+
+        for (int j = 1; j < W_FIELD - 1; j++)
+            m_field.push_back({j, i});
+    }
 }
 
 void SnakeThread::run() {
@@ -71,11 +78,7 @@ void SnakeThread::drawField() {
                         else {
 
                             std::cout << ' ';
-
-                            // Generate new fruit coordinates and spawn at next iteration
                             m_fruit = true;
-                            // m_xFruit++;
-                            // m_yFruit++;
                         }
                     }
                     // Color actual snake positions
@@ -91,9 +94,11 @@ void SnakeThread::drawField() {
                         if (checkFruit(j, i) && checkHead(j, i)) {
                             
                             m_fruit = false;
+
+                            // Generate new fruit coordinates and spawn at next iteration
                             m_countFruit++;
-                            m_xFruit++;
-                            m_yFruit++;
+                            genFruit();
+
                             Console::setColor(HIGHLIGHT_TXT);
                         }
 
@@ -156,4 +161,25 @@ void SnakeThread::updateBodyCoord() {
     // I want to keep m_countFruit + 1 coordinates
     while (m_body.size() > (m_countFruit + 1))
         m_body.erase(m_body.begin());
+}
+
+void SnakeThread::genFruit() {
+
+    // Need to do m_field - m_body and pick a random pair from the result
+    std::sort(m_field.begin(), m_field.end());
+    std::sort(m_body.begin(), m_body.end());
+
+    std::vector<std::pair<int, int>> availableFruitPos;
+    std::set_difference(
+        m_field.begin(), m_field.end(), m_body.begin(), m_body.end(),
+        std::back_inserter( availableFruitPos )
+        );
+
+    std::random_device rd; // obtain a random number from hardware
+    std::mt19937 gen(rd()); // seed the generator
+    std::uniform_int_distribution<> distr(0, availableFruitPos.size() - 1); // define the range
+
+    int randomIndex = distr(gen); // generate number
+    m_xFruit = availableFruitPos.at(randomIndex).first;
+    m_yFruit = availableFruitPos.at(randomIndex).second;
 }

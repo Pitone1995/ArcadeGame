@@ -39,6 +39,7 @@ private:
     bool checkFruit(int x, int y);
     bool checkHead(int x, int y);
     bool checkBody(int x, int y);
+    void genFruit();
     void updateBodyCoord();
 
     static void *InternalThreadEntryFunc(void *This) {((SnakeThread *)This)->run(); return NULL;}
@@ -59,6 +60,8 @@ private:
 
     // Snake's body
     std::vector<std::pair<int, int>> m_body;
+
+    std::vector<std::pair<int, int>> m_field;
 };
 
 #endif
