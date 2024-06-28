@@ -2,10 +2,15 @@
 #include "ConsoleUtils.h"
 #include <iostream>
 
+#include <string>
+
 #define H_FIELD 25
 #define W_FIELD 50
 
 SnakeThread::SnakeThread() {
+    
+    std::pair<int, int> initialCoord(m_x, m_x);
+    m_body.push_back(initialCoord);
 }
 
 void SnakeThread::run() {
@@ -18,31 +23,30 @@ void SnakeThread::run() {
     - 0 when fruit is eaten
     - check if coordinates of head (m_x, m_y) match fruit -> eat
     - check if snake eats itself -> lose
-    - when get bigger: draw head + previous position (2 positions, 2 positions)
+    - when get bigger: draw head + previous position (2 positions, 3 positions)
     */
 
     while (1) {
 
-        m_x = m_x + m_vx * m_xT;
-        m_y = m_y + m_vy * m_yT;
-
+        updateBodyCoord();
+        checkEdges();
         drawField();
     }
 }
 
-void SnakeThread::setXDirection(int v) {
+void SnakeThread::setXDirection(V vel) {
 
-    m_vx = v;
+    m_vx = vel;
 }
 
-void SnakeThread::setYDirection(int v) {
+void SnakeThread::setYDirection(V vel) {
 
-    m_vy = v;
+    m_vy = vel;
 }
 
 void SnakeThread::drawField() {
 
-    Console::resetColor();
+    //Console::resetColor();
     system("cls");
 
     for (int i = 0; i < H_FIELD; i++) {
@@ -59,13 +63,43 @@ void SnakeThread::drawField() {
 
                     // Here i am in the field
 
-                    // Color actual snake position
-                    if (i == m_y && j == m_x)
-                        Console::setColor(HIGHLIGHT_TXT);
-                
-                    std::cout << ' ';
-                    Console::setColor(DEFAULT_TXT);
+                    // Spawn fruit
+                    if (checkFruit(j, i) && !checkHead(j, i)) {
+                        
+                        if (m_fruit)
+                            std::cout << 'O';
+                        else {
 
+                            std::cout << ' ';
+
+                            // Generate new fruit coordinates and spawn at next iteration
+                            m_fruit = true;
+                            // m_xFruit++;
+                            // m_yFruit++;
+                        }
+                    }
+                    // Color actual snake positions
+                    else if (!checkFruit(j, i) && checkBody(j, i)) {      
+            
+                        Console::setColor(HIGHLIGHT_TXT);
+                        std::cout << ' ';
+                        Console::setColor(DEFAULT_TXT);
+                    }
+                    else {
+
+                        // Eat
+                        if (checkFruit(j, i) && checkHead(j, i)) {
+                            
+                            m_fruit = false;
+                            m_countFruit++;
+                            m_xFruit++;
+                            m_yFruit++;
+                            Console::setColor(HIGHLIGHT_TXT);
+                        }
+
+                        std::cout << ' ';
+                        Console::setColor(DEFAULT_TXT);
+                    }
                 }
             }
 
@@ -75,4 +109,51 @@ void SnakeThread::drawField() {
     }
 
     std::cout << "" << std::endl;
+}
+
+void SnakeThread::checkEdges() {
+
+    if (m_x < 1)
+        m_x = W_FIELD - 1;
+    else if (m_x > W_FIELD - 2)
+        m_x = 0;
+
+    if (m_y < 1)
+        m_y = H_FIELD - 1;
+    else if (m_y > H_FIELD - 2)
+        m_y = 0;
+
+    // std::string a = "m_x = " + std::to_string(m_x) + " m_y = " + std::to_string(m_y);
+    // std::string b = "echo '" + a + "' >> log.txt";
+    // system(b.c_str());
+}
+
+bool SnakeThread::checkHead(int x, int y) {
+    return (x == m_x && y == m_y);
+}
+
+bool SnakeThread::checkFruit(int x, int y) {
+    return (x == m_xFruit && y == m_yFruit);
+}
+
+bool SnakeThread::checkBody(int x, int y) {
+
+    std::pair<int, int> actualCoord(x, y);
+    if (std::find(m_body.begin(), m_body.end(), actualCoord) != m_body.end())
+        return true;
+    else
+        return false;
+}
+
+void SnakeThread::updateBodyCoord() {
+
+    m_x = m_x + m_vx * m_xT;
+    m_y = m_y + m_vy * m_yT;
+
+    std::pair<int, int> actualCoord(m_x, m_y);
+    m_body.push_back(actualCoord);
+
+    // I want to keep m_countFruit + 1 coordinates
+    while (m_body.size() > (m_countFruit + 1))
+        m_body.erase(m_body.begin());
 }

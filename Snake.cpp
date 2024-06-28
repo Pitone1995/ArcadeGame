@@ -29,26 +29,26 @@ void Snake::run() {
 
         case UP_ARROW:
 
-            st.setYDirection(-1);
-            st.setXDirection(0);
+            st.setYDirection(V_NEG);
+            st.setXDirection(V_NUL);
             break;
 
         case DWN_ARROW:
 
-            st.setYDirection(1);
-            st.setXDirection(0);
+            st.setYDirection(V_POS);
+            st.setXDirection(V_NUL);
             break;
 
         case LEFT_ARROW:
 
-            st.setXDirection(-1);
-            st.setYDirection(0);
+            st.setXDirection(V_NEG);
+            st.setYDirection(V_NUL);
             break;
 
         case RIGHT_ARROW:
 
-            st.setXDirection(1);
-            st.setYDirection(0);
+            st.setXDirection(V_POS);
+            st.setYDirection(V_NUL);
             break;
 
         default:

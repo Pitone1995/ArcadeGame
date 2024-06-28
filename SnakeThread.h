@@ -1,7 +1,18 @@
 #ifndef SnakeThread_H
 #define SnakeThread_H
 
+#include <algorithm>
+#include <utility>
+#include <vector>
+
 #include <pthread.h>
+
+typedef enum {
+
+    V_NEG = -1,
+    V_NUL,
+    V_POS
+} V;
 
 class SnakeThread {
 
@@ -17,23 +28,37 @@ public:
     }
 
     // User intervention
-    void setXDirection(int v);
-    void setYDirection(int v);
+    void setXDirection(V vel);
+    void setYDirection(V vel);
 
 private:
 
     void run();
     void drawField();
+    void checkEdges();
+    bool checkFruit(int x, int y);
+    bool checkHead(int x, int y);
+    bool checkBody(int x, int y);
+    void updateBodyCoord();
 
     static void *InternalThreadEntryFunc(void *This) {((SnakeThread *)This)->run(); return NULL;}
     pthread_t _thread;
 
+    // Law of motion's components
     int m_x = 1;
     int m_y = 1;
     int m_xT = 1;
     int m_yT = 1;
-    int m_vx = 1;
-    int m_vy = 0;
+    V m_vx = V_POS;
+    V m_vy = V_NUL;
+
+    bool m_fruit = false;
+    int m_xFruit = 1;
+    int m_yFruit = 1;
+    int m_countFruit = 0;
+
+    // Snake's body
+    std::vector<std::pair<int, int>> m_body;
 };
 
 #endif
