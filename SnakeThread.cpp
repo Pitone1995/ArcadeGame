@@ -8,13 +8,16 @@
 
 #define FRUIT '@'
 #define BODY ' '
+#define H_EDGE '-'
+#define V_EDGE '|'
 
 SnakeThread::SnakeThread() {
     
     // Vector of field, obviously borders are excluded
-    for (int i = 1; i < H_FIELD - 1; i++) {
-        for (int j = 1; j < W_FIELD - 1; j++)
-            m_field.push_back({j, i});
+    for (int y = 1; y < H_FIELD - 1; y++) {
+        
+        for (int x = 1; x < W_FIELD - 1; x++)
+            m_field.push_back({x, y});
     }
 
     genBody();
@@ -25,11 +28,7 @@ void SnakeThread::run() {
 
     /* TODO
     - check edges: change direction or enter from the other side?
-    - spawn fruits in random position in the field
-    - if eat fruit get bigger of 1
-    - check if coordinates of head (m_x, m_y) match fruit -> eat
     - check if snake eats itself -> lose
-    - when get bigger: draw head + previous position (2 positions, 3 positions)
     */
 
     while (1) {
@@ -55,25 +54,25 @@ void SnakeThread::drawField() {
 
     system("cls");
 
-    for (int i = 0; i < H_FIELD; i++) {
+    for (int y = 0; y < H_FIELD; y++) {
 
-        for (int j = 0; j < W_FIELD; j++) {
+        for (int x = 0; x < W_FIELD; x++) {
 
-            if (i == 0 || i == H_FIELD - 1)
-                Utils::drawElement('-');
+            if (y == 0 || y == H_FIELD - 1)
+                Utils::drawElement(H_EDGE);
             else {
 
-                if (j == 0 || j == W_FIELD - 1)
-                    Utils::drawElement('|');
+                if (x == 0 || x == W_FIELD - 1)
+                    Utils::drawElement(V_EDGE);
                 else {
 
                     // Here i am in the field
 
                     // Spawn or eat fruit
-                    if (checkFruit(j, i)) {
+                    if (checkFruit(x, y)) {
 
                         // Spawn                   
-                        if (!checkHead(j, i)) {
+                        if (!checkHead(x, y)) {
                         
                             if (m_fruit)
                                 Utils::drawElement(FRUIT, RED);
@@ -93,9 +92,9 @@ void SnakeThread::drawField() {
 
                     }
                     // Color actual snake positions
-                    else if (checkBody(j, i)) {      
+                    else if (checkBody(x, y)) {      
             
-                        if (checkHead(j, i))      
+                        if (checkHead(x, y))      
                             Utils::drawElement(BODY, GREEN_TXT);
                         else
                             Utils::drawElement(BODY, HIGHLIGHT_TXT);
@@ -104,7 +103,7 @@ void SnakeThread::drawField() {
                         Utils::drawElement(' ');
                 }
             }
-            if (j == W_FIELD - 1)
+            if (x == W_FIELD - 1)
                 std::cout << "" << std::endl;
         }
     }
