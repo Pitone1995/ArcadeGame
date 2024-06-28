@@ -1,18 +1,16 @@
 #include "SnakeThread.h"
-#include "ConsoleUtils.h"
-#include <iostream>
 
+#include "Utils.h"
 #include <string>
-#include <random>
 
 #define H_FIELD 25
 #define W_FIELD 50
 
+#define FRUIT '@'
+#define BODY ' '
+
 SnakeThread::SnakeThread() {
     
-    std::pair<int, int> initialCoord(m_x, m_x);
-    m_body.push_back(initialCoord);
-
     // Vector of field, obviously borders are excluded
     for (int i = 1; i < H_FIELD - 1; i++) {
         for (int j = 1; j < W_FIELD - 1; j++)
@@ -29,8 +27,6 @@ void SnakeThread::run() {
     - check edges: change direction or enter from the other side?
     - spawn fruits in random position in the field
     - if eat fruit get bigger of 1
-    - can use matrix of field dimension with 1 where fruits are
-    - 0 when fruit is eaten
     - check if coordinates of head (m_x, m_y) match fruit -> eat
     - check if snake eats itself -> lose
     - when get bigger: draw head + previous position (2 positions, 3 positions)
@@ -38,6 +34,7 @@ void SnakeThread::run() {
 
     while (1) {
 
+        genFruit();
         updateBodyCoord();
         checkEdges();
         drawField();
@@ -56,7 +53,6 @@ void SnakeThread::setYDirection(V vel) {
 
 void SnakeThread::drawField() {
 
-    //Console::resetColor();
     system("cls");
 
     for (int i = 0; i < H_FIELD; i++) {
@@ -64,50 +60,48 @@ void SnakeThread::drawField() {
         for (int j = 0; j < W_FIELD; j++) {
 
             if (i == 0 || i == H_FIELD - 1)
-                std::cout << "-";  
+                Utils::drawElement('-');
             else {
 
                 if (j == 0 || j == W_FIELD - 1)
-                    std::cout << "|";  
+                    Utils::drawElement('|');
                 else {
 
                     // Here i am in the field
 
-                    // Spawn fruit
-                    if (checkFruit(j, i) && !checkHead(j, i)) {
+                    // Spawn or eat fruit
+                    if (checkFruit(j, i)) {
+
+                        // Spawn                   
+                        if (!checkHead(j, i)) {
                         
-                        if (m_fruit)
-                            std::cout << 'O';
+                            if (m_fruit)
+                                Utils::drawElement(FRUIT, RED);
+                            else
+                                Utils::drawElement(' ');
+                        }
+                        // Eat
                         else {
 
-                            std::cout << ' ';
-                            m_fruit = true;
+                            // Generate new fruit coordinates and spawn at next iteration
+                            m_fruit = false;
+                            m_countFruit++;
+
+                            // Draw head
+                            Utils::drawElement(BODY, GREEN_TXT);
                         }
+
                     }
                     // Color actual snake positions
-                    else if (!checkFruit(j, i) && checkBody(j, i)) {      
+                    else if (checkBody(j, i)) {      
             
-                        Console::setColor(HIGHLIGHT_TXT);
-                        std::cout << ' ';
-                        Console::setColor(DEFAULT_TXT);
+                        if (checkHead(j, i))      
+                            Utils::drawElement(BODY, GREEN_TXT);
+                        else
+                            Utils::drawElement(BODY, HIGHLIGHT_TXT);
                     }
-                    else {
-
-                        // Eat
-                        if (checkFruit(j, i) && checkHead(j, i)) {
-                            
-                            m_fruit = false;
-
-                            // Generate new fruit coordinates and spawn at next iteration
-                            m_countFruit++;
-                            genFruit();
-
-                            Console::setColor(HIGHLIGHT_TXT);
-                        }
-
-                        std::cout << ' ';
-                        Console::setColor(DEFAULT_TXT);
-                    }
+                    else
+                        Utils::drawElement(' ');
                 }
             }
             if (j == W_FIELD - 1)
@@ -165,37 +159,36 @@ void SnakeThread::updateBodyCoord() {
         m_body.erase(m_body.begin());
 }
 
-int SnakeThread::genRandomInt(int min, int max) {
-
-    // In comune con tic tac toe, are file di utlities
-
-    std::random_device rd; // obtain a random number from hardware
-    std::mt19937 gen(rd()); // seed the generator
-    std::uniform_int_distribution<> distr(min, max); // define the range
-
-    return distr(gen); // generate number
-}
-
 void SnakeThread::genBody() {
     
-    int randomIndex = genRandomInt(0, m_field.size() - 1);
+    int randomIndex = Utils::genRandomInt(0, m_field.size() - 1);
     m_x = m_field.at(randomIndex).first;
     m_y = m_field.at(randomIndex).second;
+
+    m_body.push_back(std::pair<int, int>{m_x, m_y});
 }
 
 void SnakeThread::genFruit() {
 
-    // Need to do m_field - m_body and pick a random pair from the result
-    std::sort(m_field.begin(), m_field.end());
-    std::sort(m_body.begin(), m_body.end());
+    if (!m_fruit) {
+    
+        // Need to do m_field - m_body and pick a random pair from the result
+        std::sort(m_field.begin(), m_field.end());
 
-    std::vector<std::pair<int, int>> availableFruitPos;
-    std::set_difference(
-        m_field.begin(), m_field.end(), m_body.begin(), m_body.end(),
-        std::back_inserter( availableFruitPos )
-        );
+        // i do not want the m_body to be sorted
+        std::vector<std::pair<int, int>> m_bodyCopy = m_body;
+        std::sort(m_bodyCopy.begin(), m_bodyCopy.end());
 
-    int randomIndex = genRandomInt(0, availableFruitPos.size() - 1);
-    m_xFruit = availableFruitPos.at(randomIndex).first;
-    m_yFruit = availableFruitPos.at(randomIndex).second;
+        std::vector<std::pair<int, int>> availableFruitPos;
+        std::set_difference(
+            m_field.begin(), m_field.end(), m_bodyCopy.begin(), m_bodyCopy.end(),
+            std::back_inserter( availableFruitPos )
+            );
+
+        int randomIndex = Utils::genRandomInt(0, availableFruitPos.size() - 1);
+        m_xFruit = availableFruitPos.at(randomIndex).first;
+        m_yFruit = availableFruitPos.at(randomIndex).second;
+
+        m_fruit = true;
+    }
 }

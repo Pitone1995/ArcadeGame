@@ -39,10 +39,8 @@ private:
     bool checkFruit(int x, int y);
     bool checkHead(int x, int y);
     bool checkBody(int x, int y);
-    
     void updateBodyCoord();
 
-    int genRandomInt(int min, int max);
     void genFruit();
     void genBody();
 

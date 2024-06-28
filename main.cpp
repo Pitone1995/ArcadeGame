@@ -1,11 +1,8 @@
 #include <iostream>
-#include <vector>
 
 #include "Menu.h"
 #include "TicTacToe.h"
 #include "Snake.h"
-
-using namespace std;
 
 enum {
 
@@ -16,7 +13,7 @@ enum {
 
 int main(int argc, char *argv[]) {
 
-	vector<string> options = {"Tic-Tac-Toe", "Snake", "Quit"};
+	std::vector<std::string> options = {"Tic-Tac-Toe", "Snake", "Quit"};
 	// vector<string> options = {"New game", "Load game", "Quit"};
 	Menu mainMenu(options);
 
