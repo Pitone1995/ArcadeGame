@@ -13,11 +13,14 @@ SnakeThread::SnakeThread() {
     std::pair<int, int> initialCoord(m_x, m_x);
     m_body.push_back(initialCoord);
 
+    // Vector of field, obviously borders are excluded
     for (int i = 1; i < H_FIELD - 1; i++) {
-
         for (int j = 1; j < W_FIELD - 1; j++)
             m_field.push_back({j, i});
     }
+
+    genBody();
+    genFruit();
 }
 
 void SnakeThread::run() {
@@ -107,7 +110,6 @@ void SnakeThread::drawField() {
                     }
                 }
             }
-
             if (j == W_FIELD - 1)
                 std::cout << "" << std::endl;
         }
@@ -163,6 +165,24 @@ void SnakeThread::updateBodyCoord() {
         m_body.erase(m_body.begin());
 }
 
+int SnakeThread::genRandomInt(int min, int max) {
+
+    // In comune con tic tac toe, are file di utlities
+
+    std::random_device rd; // obtain a random number from hardware
+    std::mt19937 gen(rd()); // seed the generator
+    std::uniform_int_distribution<> distr(min, max); // define the range
+
+    return distr(gen); // generate number
+}
+
+void SnakeThread::genBody() {
+    
+    int randomIndex = genRandomInt(0, m_field.size() - 1);
+    m_x = m_field.at(randomIndex).first;
+    m_y = m_field.at(randomIndex).second;
+}
+
 void SnakeThread::genFruit() {
 
     // Need to do m_field - m_body and pick a random pair from the result
@@ -175,11 +195,7 @@ void SnakeThread::genFruit() {
         std::back_inserter( availableFruitPos )
         );
 
-    std::random_device rd; // obtain a random number from hardware
-    std::mt19937 gen(rd()); // seed the generator
-    std::uniform_int_distribution<> distr(0, availableFruitPos.size() - 1); // define the range
-
-    int randomIndex = distr(gen); // generate number
+    int randomIndex = genRandomInt(0, availableFruitPos.size() - 1);
     m_xFruit = availableFruitPos.at(randomIndex).first;
     m_yFruit = availableFruitPos.at(randomIndex).second;
 }

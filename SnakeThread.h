@@ -39,24 +39,28 @@ private:
     bool checkFruit(int x, int y);
     bool checkHead(int x, int y);
     bool checkBody(int x, int y);
-    void genFruit();
+    
     void updateBodyCoord();
+
+    int genRandomInt(int min, int max);
+    void genFruit();
+    void genBody();
 
     static void *InternalThreadEntryFunc(void *This) {((SnakeThread *)This)->run(); return NULL;}
     pthread_t _thread;
 
     // Law of motion's components
-    int m_x = 1;
-    int m_y = 1;
+    int m_x{};
+    int m_y{};
     int m_xT = 1;
     int m_yT = 1;
     V m_vx = V_POS;
     V m_vy = V_NUL;
 
     bool m_fruit = false;
-    int m_xFruit = 1;
-    int m_yFruit = 1;
-    int m_countFruit = 0;
+    int m_xFruit{};
+    int m_yFruit{};
+    int m_countFruit{};
 
     // Snake's body
     std::vector<std::pair<int, int>> m_body;
